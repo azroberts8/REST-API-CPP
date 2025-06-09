@@ -28,8 +28,13 @@ namespace http {
       char buffer[30000] = {0};
       request_method_t request_method;
       std::string request_route;
+      char* response;
 
       void getMethodAndRoute();
+      void routeRequest();
+      void respondData();
+      void respond404();
+      void respondAuth();
   };
 }
 

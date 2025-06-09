@@ -55,17 +55,12 @@ namespace http {
       read(m_client_socket, buffer, sizeof(buffer));
       std::cout << "Recieved request:\n" << buffer << "\n";
 
+      // Determine request method and route
       getMethodAndRoute();
       std::cout << "Request Route: " << request_route << "\n";
       std::cout << "Request Method: " << request_method << "\n";
 
-      // Send response
-      const char* response =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/plain\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        "Hello, World!\r\n";
+      routeRequest();
 
       send(m_client_socket, response, strlen(response), 0);
       close(m_client_socket);
@@ -111,5 +106,42 @@ namespace http {
       request_method = DELETE;
     }
     
+  }
+
+  void TcpServer::routeRequest() {
+    if(request_route == "/data" && request_method == GET) {
+      respondData();
+    } else if(request_route == "/auth" && request_method == POST) {
+      respondAuth();
+    } else {
+      respond404();
+    }
+  }
+
+  void TcpServer::respondData() {
+    response =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain\r\n"
+      "Connection: close\r\n"
+      "\r\n"
+      "You've reached data!\r\n";
+  }
+
+  void TcpServer::respond404() {
+    response =
+      "HTTP/1.1 404 Not Found\r\n"
+      "Content-Type: text/plain\r\n"
+      "Connection: close\r\n"
+      "\r\n"
+      "Not found, cheif!\r\n";
+  }
+
+  void TcpServer::respondAuth() {
+    response =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain\r\n"
+      "Connection: close\r\n"
+      "\r\n"
+      "You've reached auth!\r\n";
   }
 }
