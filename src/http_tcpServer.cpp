@@ -55,6 +55,10 @@ namespace http {
       read(m_client_socket, buffer, sizeof(buffer));
       std::cout << "Recieved request:\n" << buffer << "\n";
 
+      getMethodAndRoute();
+      std::cout << "Request Route: " << request_route << "\n";
+      std::cout << "Request Method: " << request_method << "\n";
+
       // Send response
       const char* response =
         "HTTP/1.1 200 OK\r\n"
@@ -74,5 +78,38 @@ namespace http {
   TcpServer::~TcpServer() {
     close(m_server_socket);
     exit(0);
+  }
+
+  // Parse request method & route
+  void TcpServer::getMethodAndRoute() {
+    std::string request_method_str = "";
+    request_method = UNKNOWN;
+    request_route = "";
+    int i = 0;
+
+    // get request method string
+    while(buffer[i] != ' ') {
+      request_method_str.push_back(buffer[i]);
+      i++;
+    }
+
+    // get request route
+    i++;
+    while(buffer[i] != ' ') {
+      request_route.push_back(buffer[i]);
+      i++;
+    }
+
+    // determine request method
+    if(request_method_str == "GET") {
+      request_method = GET;
+    } else if(request_method_str == "POST") {
+      request_method = POST;
+    } else if(request_method_str == "PUT") {
+      request_method = PUT;
+    } else if(request_method_str == "DELETE") {
+      request_method = DELETE;
+    }
+    
   }
 }
