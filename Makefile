@@ -5,7 +5,7 @@ CXX_FLAGS := -Wall -Wextra -I./src
 # Source files
 SOURCE_DIR := src
 BUILD_DIR := build
-SOURCES := $(SOURCE_DIR)/main.cpp $(SOURCE_DIR)/http_tcpServer.cpp
+SOURCES := $(SOURCE_DIR)/main.cpp $(SOURCE_DIR)/http_tcpServer.cpp $(SOURCE_DIR)/http_request.cpp
 OBJECTS := $(patsubst $(SOURCE_DIR)/%.cpp, $(BUILD_DIR)/%.o, $(SOURCES))
 
 # Executable

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
+#include "http_request.h"
 
 namespace http {
   // Constructor
@@ -56,15 +57,16 @@ namespace http {
       std::cout << "Recieved request:\n" << buffer << "\n";
 
       // Determine request method and route
-      getMethodAndRoute();
-      std::cout << "Request Route: " << request_route << "\n";
-      std::cout << "Request Method: " << request_method << "\n";
+      request = new HTTPRequest(buffer, sizeof(buffer));
+      std::cout << "Request Route: " << request->getPath() << "\n";
+      std::cout << "Request Method: " << request->getMethod() << "\n";
 
       routeRequest();
 
       send(m_client_socket, response, strlen(response), 0);
       close(m_client_socket);
       std::cout << "Response sent!\n";
+      delete request;
     }
     
   }
@@ -77,41 +79,42 @@ namespace http {
 
   // Parse request method & route
   void TcpServer::getMethodAndRoute() {
-    std::string request_method_str = "";
-    request_method = UNKNOWN;
-    request_route = "";
-    int i = 0;
+    request = new HTTPRequest(buffer, sizeof(buffer));
+    // std::string request_method_str = "";
+    // request_method = UNKNOWN;
+    // request_route = "";
+    // int i = 0;
 
     // get request method string
-    while(buffer[i] != ' ') {
-      request_method_str.push_back(buffer[i]);
-      i++;
-    }
+    // while(buffer[i] != ' ') {
+    //   request_method_str.push_back(buffer[i]);
+    //   i++;
+    // }
 
     // get request route
-    i++;
-    while(buffer[i] != ' ') {
-      request_route.push_back(buffer[i]);
-      i++;
-    }
+    // i++;
+    // while(buffer[i] != ' ') {
+    //   request_route.push_back(buffer[i]);
+    //   i++;
+    // }
 
     // determine request method
-    if(request_method_str == "GET") {
-      request_method = GET;
-    } else if(request_method_str == "POST") {
-      request_method = POST;
-    } else if(request_method_str == "PUT") {
-      request_method = PUT;
-    } else if(request_method_str == "DELETE") {
-      request_method = DELETE;
-    }
+    // if(request_method_str == "GET") {
+    //   request_method = GET;
+    // } else if(request_method_str == "POST") {
+    //   request_method = POST;
+    // } else if(request_method_str == "PUT") {
+    //   request_method = PUT;
+    // } else if(request_method_str == "DELETE") {
+    //   request_method = DELETE;
+    // }
     
   }
 
   void TcpServer::routeRequest() {
-    if(request_route == "/data" && request_method == GET) {
+    if(request->getPath() == "/data" && request->getMethod() == GET) {
       respondData();
-    } else if(request_route == "/auth" && request_method == POST) {
+    } else if(request->getPath() == "/auth" && request->getMethod() == POST) {
       respondAuth();
     } else {
       respond404();
