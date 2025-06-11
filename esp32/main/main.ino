@@ -10,7 +10,6 @@
 
 int blue_led_value = 0;
 char led_increasing = 1;
-char complete = 0;
 
 hw_timer_t *led_fade_timer = NULL;
 WiFiMulti wifiMulti;
@@ -23,11 +22,7 @@ void IRAM_ATTR onFadeTimer() {
   }
   if(blue_led_value == 252) led_increasing = 0;
   if(blue_led_value == 0) led_increasing = 1;
-  if(complete == 0) {
-    analogWrite(BLUE, blue_led_value);
-  } else {
-    analogWrite(BLUE, LOW);
-  }
+  analogWrite(BLUE, blue_led_value);
 }
 
 void setup() {
@@ -67,7 +62,6 @@ void setup() {
 
     if(http_code > 0) {
       Serial.printf("[HTTP] Response Code: %d\n\n", http_code);
-      complete = 1;
       timerStop(led_fade_timer);
 
       if(http_code == HTTP_CODE_OK) {
@@ -85,6 +79,5 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  analogWrite(BLUE, LOW);
 }
