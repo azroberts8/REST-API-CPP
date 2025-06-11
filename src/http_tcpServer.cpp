@@ -60,6 +60,7 @@ namespace http {
       request = new HTTPRequest(buffer, sizeof(buffer));
       std::cout << "Request Route: " << request->getPath() << "\n";
       std::cout << "Request Method: " << request->getMethod() << "\n";
+      std::cout << "User Agent: " << request->getHeader("User-Agent") << "\n";
 
       routeRequest();
 

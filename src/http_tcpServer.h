@@ -8,14 +8,6 @@
 #include "http_request.h"
 
 namespace http {
-  // enum request_method_t {
-  //   UNKNOWN,
-  //   GET,
-  //   POST,
-  //   PUT,
-  //   DELETE
-  // };
-
   class TcpServer {
     public:
       TcpServer();
@@ -27,8 +19,6 @@ namespace http {
       struct sockaddr_in m_address;
       int m_address_len;
       char buffer[30000] = {0};
-      // request_method_t request_method;
-      // std::string request_route;
       HTTPRequest* request;
       char* response;
 

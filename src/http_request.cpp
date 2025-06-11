@@ -1,4 +1,5 @@
 #include "http_request.h"
+// #include <iostream>
 #include <stdlib.h>
 #include <stdint.h>
 #include <map>
@@ -59,6 +60,40 @@ namespace http {
     }
 
     // Parse Request Headers
+    buffer_location++;
+    char last_character = '\n';
+    std::string key = "";
+    std::string value = "";
+    while(
+      (buffer_location < request_buffer_size)
+      && !(last_character == '\n' && request_buffer[buffer_location] == '\n')
+    ) {
+      // Header key
+      while(
+        (buffer_location < request_buffer_size)
+        && (request_buffer[buffer_location] != ':') 
+      ) {
+        key.push_back(request_buffer[buffer_location]);
+        buffer_location++;
+      }
+
+      // Header value
+      buffer_location++;
+      buffer_location++;
+      while(
+        (buffer_location < request_buffer_size)
+        && (request_buffer[buffer_location] != '\n')
+      ) {
+        value.push_back(request_buffer[buffer_location]);
+        buffer_location++;
+      }
+      last_character = request_buffer[buffer_location];
+      buffer_location++;
+
+      request_headers.insert(std::make_pair(key, value));
+      key = "";
+      value = "";
+    }
 
     // Parse Request Parameters
   }
@@ -85,11 +120,11 @@ namespace http {
 
   // Request Header Accessor
   std::string HTTPRequest::getHeader(std::string header) {
-
+    return request_headers.at(header);
   }
 
   // Request Parameter Accessor
   std::string HTTPRequest::getFormParameter(std::string parameter) {
-
+    return form_parameters.at(parameter);
   }
 }
